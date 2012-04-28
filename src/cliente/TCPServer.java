@@ -10,8 +10,7 @@ import twitter4j.Tweet;
 class TCPServer {
 
 	public static void main(String argv[]) throws Exception {
-		String clientSentence;
-		String capitalizedSentence;
+		int clientSentence;
 
 		int porta = 6789;
 		ServerSocket welcomeSocket = new ServerSocket(porta);
@@ -34,18 +33,18 @@ class TCPServer {
 
 			do {
 
-				clientSentence = inFromClient.readLine();
-				int clientSentenceInt = Integer.parseInt(clientSentence);	// Convertendo String do Client para Inteiro
+				clientSentence = inFromClient.read();
+				String hashtag = inFromClient.readLine();
 				
 				QueryResult result;
 				TwitterImpl t = new TwitterImpl();
 				String resultadoCliente = "";
 				
-				switch (clientSentenceInt) {
+				switch (clientSentence) {
 				case 1:
-					result = t.pesquisaTweets("#asminapira");
+					result = t.pesquisaTweets(hashtag);
 					for (Tweet tweet : result.getTweets()) {
-						outToClient.writeBytes(tweet.getFromUser() + "@" + tweet.getGeoLocation() + " :" + tweet.getText() + "\n");
+						outToClient.writeBytes("@" + tweet.getFromUser() + " " + tweet.getGeoLocation() + ": " + tweet.getText() + "\n");
 					}
 					outToClient.writeBytes("\\\\q");
 					break;
@@ -54,7 +53,7 @@ class TCPServer {
 					break;
 				}
 
-			} while(!clientSentence.equalsIgnoreCase("x"));
+			} while(!(clientSentence == -1));
 
 			connectionSocket.close();
 

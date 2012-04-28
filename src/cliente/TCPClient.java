@@ -3,6 +3,7 @@ package cliente;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 class TCPClient {
 
@@ -28,12 +29,18 @@ class TCPClient {
 		
 		while(true) {
 			
+			String resposta = "";
+			String entrada = null;
+			
 			System.out.println("Digite sua opção: ");
 			sentence = inFromUser.readLine();
-			String resposta = "";
 			
 			if (sentence.equalsIgnoreCase("a")) {
-				outToServer.writeBytes("1" + '\n');
+				System.out.println("Digite sua hashtag: ");
+				entrada = inFromUser.readLine();
+				
+				outToServer.writeByte(1);
+				outToServer.writeBytes(entrada + "\n");
 				do {
 					System.out.println(resposta = inFromServer.readLine());
 					System.out.println();
@@ -43,14 +50,7 @@ class TCPClient {
 			} else {
 				System.out.println("Comando não reconhecido!" + '\n');
 			}
-
-			
-			
 		}
-
-		
-
 		//clientSocket.close();
-
 	}
 }
